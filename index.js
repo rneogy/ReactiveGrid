@@ -31,6 +31,15 @@ let lastTime = new Date().getTime();
 const fps = 60;
 const dt = 1000 / fps;
 
+function gaussian(x) {
+	const gaussianConstant = 1 / Math.sqrt(2 * Math.PI),
+		mean = 0,
+    	sigma = 2;
+
+    x = (x - mean) / sigma;
+    return gaussianConstant * Math.exp(-.5 * x * x) / sigma;
+};
+
 container.addEventListener("mousemove", e => {
   const curTime = new Date().getTime();
   if (curTime - lastTime < dt) {
@@ -47,15 +56,15 @@ container.addEventListener("mousemove", e => {
       const dx = x - cx;
       const dy = y - cy;
       const dist2 = dx * dx + dy * dy;
-      if (dist2 < kernelDist2) {
+      // if (dist2 < kernelDist2*2) {
         circle.setAttribute("r", Math.max(minRadius, (1 - dist2 / kernelDist2) * r));
-        circle.setAttribute("cx", cx + dx / gridSpacing);
-        circle.setAttribute("cy", cy + dy / gridSpacing);
-      } else {
-        circle.setAttribute("r", minRadius);
-        circle.setAttribute("cx", cx);
-        circle.setAttribute("cy", cy);
-      }
+        circle.setAttribute("cx", cx + dx * gaussian(dx*dx / kernelDist2 * kernelSize));
+        circle.setAttribute("cy", cy + dy * gaussian(dy*dy / kernelDist2 * kernelSize));
+      // } else {
+      //   circle.setAttribute("r", minRadius);
+      //   circle.setAttribute("cx", cx);
+      //   circle.setAttribute("cy", cy);
+      // }
     }
   }
 });
