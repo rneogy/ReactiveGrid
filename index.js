@@ -1,10 +1,10 @@
 const container = document.querySelector("#container");
 const width = window.innerWidth;
 const height = window.innerHeight;
-const gridSpacing = 40;
+const gridSpacing = 50;
 const r = 8;
 const minRadius = 2;
-const kernelSize = 5;
+const kernelSize = 4;
 const kernelDist2 = kernelSize * kernelSize * gridSpacing * gridSpacing;
 
 const circles = [];
@@ -34,7 +34,7 @@ const dt = 1000 / fps;
 function gaussian(x) {
 	const gaussianConstant = 1 / Math.sqrt(2 * Math.PI),
 		mean = 0,
-    	sigma = 3;
+    sigma = 3;
 
     x = (x - mean) / sigma;
     return gaussianConstant * Math.exp(-.5 * x * x) / sigma;
@@ -57,13 +57,16 @@ container.addEventListener("mousemove", e => {
       const dy = y - cy;
       const dist2 = dx * dx + dy * dy;
       if (dist2 < kernelDist2*2) {
-        circle.setAttribute("r", Math.max(minRadius, (1 - dist2 / kernelDist2) * r));
-        circle.setAttribute("cx", cx - dx * gaussian(dist2 / kernelDist2 * kernelSize));
-        circle.setAttribute("cy", cy - dy * gaussian(dist2 / kernelDist2 * kernelSize));
+        const g = gaussian(dist2 / kernelDist2 * kernelSize);
+        circle.setAttribute("r", Math.max(minRadius, g*10 * r));
+        circle.setAttribute("cx", cx - dx * g);
+        circle.setAttribute("cy", cy - dy * g);
+        circle.style.stroke=`rgb(${Math.floor(Math.abs(g) * 1000)},${Math.floor(Math.abs(g) * 500)},${Math.floor(Math.abs(g) * 1500)})`;
       } else {
         circle.setAttribute("r", minRadius);
         circle.setAttribute("cx", cx);
         circle.setAttribute("cy", cy);
+        circle.style.stroke=`rgb(0,0,0)`;
       }
     }
   }
