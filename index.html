@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>ReactiveGrid</title>
     <link rel="stylesheet" type="text/css" href="index.css" />
   </head>
   <body>
     <svg id="container"></svg>
+    <div id="sliders">
+      <span>Radius Gain: </span><input type="range" min="1" max="50" value="10" class="slider" id="radiusGain">&nbsp;
+      <span>Kernel Size: </span><input type="range" min="1" max="10" value="4" id="kernelSize">
+    </div>
     <script src="index.js"></script>
   </body>
 </html>

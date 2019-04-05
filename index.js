@@ -4,8 +4,9 @@ const height = window.innerHeight;
 const gridSpacing = 50;
 const r = 8;
 const minRadius = 2;
-const kernelSize = 4;
-const kernelDist2 = kernelSize * kernelSize * gridSpacing * gridSpacing;
+let kernelSize = 4;
+let kernelDist2 = kernelSize * kernelSize * gridSpacing * gridSpacing;
+let radiusGain = 10;
 
 const circles = [];
 
@@ -46,8 +47,8 @@ container.addEventListener("mousemove", e => {
     return;
   }
   lastTime = curTime;
-  const x = e.clientX;
-  const y = e.clientY;
+  const x = e.clientX - 0.1*width;
+  const y = e.clientY - 0.1*height;
   for (let i = 0; i < circles.length; i++) {
     for (let j = 0; j < circles[0].length; j++) {
       const circle = circles[i][j];
@@ -58,7 +59,7 @@ container.addEventListener("mousemove", e => {
       const dist2 = dx * dx + dy * dy;
       if (dist2 < kernelDist2*2) {
         const g = gaussian(dist2 / kernelDist2 * kernelSize);
-        circle.setAttribute("r", Math.max(minRadius, g*10 * r));
+        circle.setAttribute("r", Math.max(minRadius, g * radiusGain * r));
         circle.setAttribute("cx", cx - dx * g);
         circle.setAttribute("cy", cy - dy * g);
         circle.style.stroke=`rgb(${Math.floor(Math.abs(g) * 1000)},${Math.floor(Math.abs(g) * 500)},${Math.floor(Math.abs(g) * 1500)})`;
@@ -71,3 +72,13 @@ container.addEventListener("mousemove", e => {
     }
   }
 });
+
+
+document.querySelector("#radiusGain").oninput = function() {
+  radiusGain = this.value;
+}
+
+document.querySelector("#kernelSize").oninput = function() {
+  kernelSize = this.value;
+  kernelDist2 = kernelSize * kernelSize * gridSpacing * gridSpacing;
+}
